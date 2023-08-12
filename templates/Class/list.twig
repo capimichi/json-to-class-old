@@ -1,0 +1,56 @@
+<?php
+
+namespace {{ class.namespace }};
+
+class {{ class.getUcName }} implements \JsonSerializable, \ArrayAccess
+{
+    /**
+    * @var array
+    */
+    protected $items = [];
+
+    public function offsetSet($offset, $value) {
+        if (is_null($offset)) {
+            $this->items[] = $value;
+        } else {
+            $this->items[$offset] = $value;
+        }
+    }
+
+    public function offsetExists($offset) {
+        return isset($this->items[$offset]);
+    }
+
+    public function offsetUnset($offset) {
+        unset($this->items[$offset]);
+    }
+
+    public function offsetGet($offset) {
+        return isset($this->items[$offset]) ? $this->items[$offset] : null;
+    }
+
+    public function jsonSerialize()
+    {
+        return $this->items;
+    }
+
+    public static function fromJson($data)
+    {
+        $object = new self();
+        if(!is_array($data)){
+            return $object;
+        }
+        foreach ($data as $key => $value) {
+
+            {% if (class.getCleanListType in default_types) %}
+                $object[] = $value;
+            {% else %}
+                {% if class.getListType %}
+                        $object[] = {{ class.getCleanListType }}::fromJson($value);
+                    {% else %}
+                        $object[] = $value;
+                {% endif %}
+            {% endif %}
+        }
+    }
+}

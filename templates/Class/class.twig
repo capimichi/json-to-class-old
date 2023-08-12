@@ -1,0 +1,71 @@
+<?php
+
+namespace {{ class.namespace }};
+
+class {{ class.getUcName }} implements \JsonSerializable
+{
+
+{% for property in class.properties %}
+    /**
+     * @var {{ property.getCleanType }}|null
+     */
+    protected ${{ property.getCleanName }}{% if property.type == "array" %} = []{% endif %};
+
+{% endfor %}
+{% for property in class.properties %}
+    /**
+     * @return {{ property.getCleanType }}|null
+     */
+    public function get{{ property.getUcName }}()
+    {
+        return $this->{{ property.getCleanName }};
+}
+
+/**
+* @param {{ property.getCleanType }}|null ${{ property.getCleanName }}
+*/
+public function set{{ property.getUcName }}(${{ property.getCleanName }})
+{
+$this->{{ property.getCleanName }} = ${{ property.getCleanName }};
+}
+
+{% endfor %}
+
+public static function fromJson($data)
+{
+$object = new self();
+if(!is_array($data)){
+    return $object;
+}
+{% for property in class.properties %}
+    if (array_key_exists('{{ property.name }}', $data)) {
+    {% if property.type in default_types %}
+        {% if property.type in ["array"] and ((property.getArrayClass | length) > 0) %}
+            $items = [];
+            foreach ($data['{{ property.name }}'] as $key => $item) {
+            $items[$key] = \{{ property.getArrayClass }}::fromJson($item);
+            }
+            $object->set{{ property.getUcName }}($items);
+        {% else %}
+            $object->set{{ property.getUcName }}($data['{{ property.name }}']);
+        {% endif %}
+    {% else %}
+        $instance = {{ property.getCleanType }}::fromJson($data['{{ property.name }}']);
+        $object->set{{ property.getUcName }}($instance);
+    {% endif %}
+    }
+{% endfor %}
+return $object;
+}
+
+public function jsonSerialize(): array
+{
+$data = [];
+{% for property in class.properties %}
+    if ($this->{{ property.getCleanName }} !== null) {
+    $data['{{ property.name }}'] = $this->{{ property.getCleanName }};
+    }
+{% endfor %}
+return $data;
+}
+}

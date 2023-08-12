@@ -1,0 +1,43 @@
+<?php
+
+namespace {{ class.namespace }};
+
+use JMS\Serializer\Annotation as Serializer;
+
+/**
+ * Class {{ class.getUcName }}
+ *
+ * @Serializer\ExclusionPolicy("none")
+ */
+class {{ class.getUcName }}
+{
+
+{% for property in class.properties %}
+    /**
+     * @var {{ property.getCleanType }}{{ property.isArray ? "[]" : "" }}|null
+     * @Serializer\Type("{{ property.isArray ? "array<" : "" }}{{ property.getType }}{{ property.isArray ? ">" : "" }}")
+     * @Serializer\SerializedName("{{ property.getKey }}")
+     */
+    protected ${{ property.getCleanName }}{% if property.type == "array" %} = []{% endif %};
+
+{% endfor %}
+{% for property in class.properties %}
+    /**
+     * @return {{ property.getCleanType }}{{ property.isArray ? "[]" : "" }}|null
+     */
+    public function get{{ property.getUcName }}()
+    {
+        return $this->{{ property.getCleanName }};
+}
+
+/**
+* @param {{ property.getCleanType }}{{ property.isArray ? "[]" : "" }}|null ${{ property.getCleanName }}
+*/
+public function set{{ property.getUcName }}(${{ property.getCleanName }})
+{
+$this->{{ property.getCleanName }} = ${{ property.getCleanName }};
+}
+
+{% endfor %}
+
+}

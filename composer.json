@@ -1,0 +1,20 @@
+{
+    "name": "michi/json-to-class",
+    "autoload": {
+        "psr-4": {
+            "Michi\\JsonToClass\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Michele Capicchioni",
+            "email": "capimichi@gmail.com"
+        }
+    ],
+    "require": {
+        "symfony/console": "^6.2",
+        "twig/twig": "^3.0",
+        "cocur/slugify": "^4.3",
+        "adbario/php-dot-notation": "^3.3"
+    }
+}
