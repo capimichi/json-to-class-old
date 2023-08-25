@@ -124,7 +124,11 @@ class Property
         if (in_array($type, PropertyTypeEnum::getTypes())) {
             return $type;
         }
-        return "\\" . $type;
+        $clean = "\\" . $type;
+        if (strlen($clean) < 2) {
+            return $type;
+        }
+        return $clean;
     }
     
     /**
