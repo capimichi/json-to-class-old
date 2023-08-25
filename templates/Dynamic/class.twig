@@ -22,7 +22,7 @@ class {{ class.getUcName }}
             {% set varTypeString = "#{property.getCleanType}[]" %}
         {% endif %}
     {% else %}
-        {% set typeString = propety.getType %}
+        {% set typeString = property.getType %}
         {% set varTypeString = property.getCleanType %}
     {% endif %}
 /**
@@ -39,10 +39,10 @@ class {{ class.getUcName }}
         {% if property.getType == 'mixed' %}
             {% set typeString = "array" %}
         {% else %}
-            {% set typeString = "#{propety.getType}[]" %}
+            {% set typeString = "#{property.getType}[]" %}
         {% endif %}
     {% else %}
-        {% set typeString = propety.getType %}
+        {% set typeString = property.getType %}
     {% endif %}
 
     /**
