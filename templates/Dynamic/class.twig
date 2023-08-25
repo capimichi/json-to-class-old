@@ -13,17 +13,40 @@ class {{ class.getUcName }}
 {
 
 {% for property in class.properties %}
-    /**
-     * @var {{ property.getCleanType }}{{ property.isArray ? "[]" : "" }}|null
-     * @Serializer\Type("{{ property.isArray ? "array<" : "" }}{{ property.getType }}{{ property.isArray ? ">" : "" }}")
+    {% if property.isArray %}
+        {% if property.getType == 'mixed' %}
+            {% set typeString = "array" %}
+            {% set varTypeString = "array" %}
+        {% else %}
+            {% set typeString = "array<#{property.getCleanType}>" %}
+            {% set varTypeString = "#{property.getCleanType}[]" %}
+        {% endif %}
+    {% else %}
+        {% set typeString = propety.getType %}
+        {% set varTypeString = property.getCleanType %}
+    {% endif %}
+/**
+     * @var {{ varTypeString | raw }}|null
+     * @Serializer\Type("{{ typeString | raw }}")
      * @Serializer\SerializedName("{{ property.getKey }}")
      */
     protected ${{ property.getCleanName }}{% if property.type == "array" %} = []{% endif %};
 
 {% endfor %}
 {% for property in class.properties %}
+
+{% if property.isArray %}
+        {% if property.getType == 'mixed' %}
+            {% set typeString = "array" %}
+        {% else %}
+            {% set typeString = "#{propety.getType}[]" %}
+        {% endif %}
+    {% else %}
+        {% set typeString = propety.getType %}
+    {% endif %}
+
     /**
-     * @return {{ property.getCleanType }}{{ property.isArray ? "[]" : "" }}|null
+     * @return {{ typeString | raw }}|null
      */
     public function get{{ property.getUcName }}()
     {
@@ -31,7 +54,7 @@ class {{ class.getUcName }}
 }
 
 /**
-* @param {{ property.getCleanType }}{{ property.isArray ? "[]" : "" }}|null ${{ property.getCleanName }}
+* @param {{ typeString | raw }}|null ${{ property.getCleanName }}
 */
 public function set{{ property.getUcName }}(${{ property.getCleanName }})
 {

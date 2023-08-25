@@ -14,6 +14,7 @@ class WordHelper
     public static function pascalCase($string)
     {
         $string = str_replace(['-', '_'], ' ', $string);
+        $string = trim($string);
         $string = explode(' ', $string);
         $string = array_map(function ($piece) {
             $piece[0] = strtoupper($piece[0]);
