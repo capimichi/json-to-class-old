@@ -18,11 +18,11 @@ class {{ class.getUcName }}
             {% set typeString = "array" %}
             {% set varTypeString = "array" %}
         {% else %}
-            {% set typeString = "array<#{property.getCleanType}>" %}
+            {% set typeString = "array<#{property.getType}>" %}
             {% set varTypeString = "#{property.getCleanType}[]" %}
         {% endif %}
     {% else %}
-        {% set typeString = property.getCleanType %}
+        {% set typeString = property.getType %}
         {% set varTypeString = property.getCleanType %}
     {% endif %}
 /**
