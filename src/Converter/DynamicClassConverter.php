@@ -5,6 +5,7 @@ namespace Michi\JsonToClass\Converter;
 use Adbar\Dot;
 use Cocur\Slugify\Slugify;
 use Michi\JsonToClass\Enum\PropertyTypeEnum;
+use Michi\JsonToClass\Helper\ArrayHelper;
 use Michi\JsonToClass\Helper\WordHelper;
 use Michi\JsonToClass\Model\ClassObj;
 use Michi\JsonToClass\Model\Property;
@@ -69,13 +70,14 @@ class DynamicClassConverter
             $currentNamespace = $namespace . '\\' . $objectName;
             $type = PropertyTypeEnum::TYPE_MIXED;
             if (count($data)) {
-                $mergedDatum = [];
+                $mergedDatum = null;
                 $data = array_filter($data);
                 foreach ($data as $datum) {
-                    if (is_array($datum)) {
-                        $mergedDatum = array_merge($mergedDatum, $datum);
-                    } else {
+                    if(!$mergedDatum){
                         $mergedDatum = $datum;
+                    }
+                    if (is_array($datum)) {
+                        $mergedDatum = ArrayHelper::mergeArrays($mergedDatum, $datum);
                     }
                 }
                 $type = $this->convert($io, $mergedDatum, $currentNamespace, $itemName, $outputDir, $uniqueId);
@@ -86,7 +88,7 @@ class DynamicClassConverter
         } else {
             foreach ($data as $key => $value) {
                 $subId = implode('_', [$uniqueId, $key]);
-                if (!isset($this->types[$subId])) {
+                if (empty($this->types[$subId]) || $this->types[$subId] == PropertyTypeEnum::TYPE_STRING) {
                     $propertyName = WordHelper::pascalCase($key);
                     $currentNamespace = $namespace . '\\' . $objectName;
                     $this->types[$subId] = $this->convert($io, $value, $currentNamespace, $propertyName, $outputDir, $subId);
@@ -105,7 +107,7 @@ class DynamicClassConverter
                         $t,
                         $isArray
                     );
-                    $properties[] = $property;
+                    $properties[$subId] = $property;
                 }
             }
             
