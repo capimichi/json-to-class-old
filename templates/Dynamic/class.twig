@@ -28,7 +28,7 @@ class {{ class.getUcName }}
 /**
 {% if property.type == 'unknown' %}
      * @var mixed|null
-     * @Exclude
+     * @Serializer\Exclude
      * TODO: Find out type for
      *  {{ class.namespace }}\{{ class.getUcName }}::{{ property.getKey }}
 {% else %}
