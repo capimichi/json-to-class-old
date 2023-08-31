@@ -124,7 +124,7 @@ class DynamicClassConverter
     
     private function getType($value)
     {
-        $type = PropertyTypeEnum::TYPE_STRING;
+        $type = PropertyTypeEnum::TYPE_UNKNOWN;
         
         if (is_string($value)) {
             $type = PropertyTypeEnum::TYPE_STRING;

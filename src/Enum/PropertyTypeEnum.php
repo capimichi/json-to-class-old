@@ -10,7 +10,8 @@ class PropertyTypeEnum
     const TYPE_BOOLEAN = 'bool';
     const TYPE_ARRAY   = 'array';
     const TYPE_OBJECT  = 'object';
-    const TYPE_MIXED  = 'mixed';
+    const TYPE_MIXED   = 'mixed';
+    const TYPE_UNKNOWN = 'unknown';
     
     public static function getTypes()
     {

@@ -26,9 +26,16 @@ class {{ class.getUcName }}
         {% set varTypeString = property.getCleanType %}
     {% endif %}
 /**
+{% if property.type == 'unknown' %}
+     * @var mixed|null
+     * @Exclude
+     * TODO: Find out type for
+     *  {{ class.namespace }}\{{ class.getUcName }}::{{ property.getKey }}
+{% else %}
      * @var {{ varTypeString | raw }}|null
      * @Serializer\Type("{{ typeString | raw }}")
      * @Serializer\SerializedName("{{ property.getKey }}")
+{% endif %}
      */
     protected ${{ property.getCleanName }}{% if property.type == "array" %} = []{% endif %};
 
@@ -41,6 +48,8 @@ class {{ class.getUcName }}
         {% else %}
             {% set typeString = "#{property.getCleanType}[]" %}
         {% endif %}
+    {% elseif property.getType == "unknown" %}
+        {% set typeString = "mixed" %}
     {% else %}
         {% set typeString = property.getCleanType %}
     {% endif %}
